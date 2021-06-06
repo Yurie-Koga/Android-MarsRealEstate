@@ -26,7 +26,8 @@ import com.example.android.marsrealestate.databinding.GridViewItemBinding
 import com.example.android.marsrealestate.network.MarsProperty
 
 // 1. add adapter class
-class PhotoGridAdapter: ListAdapter<MarsProperty, PhotoGridAdapter.MarsPropertyViewHolder>(DiffCallback) {
+class PhotoGridAdapter(private val onClickListener: OnClickLister) :
+    ListAdapter<MarsProperty, PhotoGridAdapter.MarsPropertyViewHolder>(DiffCallback) {
     // 2. add fun
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,12 +36,17 @@ class PhotoGridAdapter: ListAdapter<MarsProperty, PhotoGridAdapter.MarsPropertyV
         // 5. return view holder
         return MarsPropertyViewHolder((GridViewItemBinding.inflate(LayoutInflater.from(parent.context))))
     }
+
     // 2. add fun
     override fun onBindViewHolder(holder: PhotoGridAdapter.MarsPropertyViewHolder, position: Int) {
         // 6. bind RecyclerView and MarsProperty
         val marsProperty = getItem(position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(marsProperty)
+        }
         holder.bind(marsProperty)
     }
+
     // 3. add companion object
     companion object DiffCallback : DiffUtil.ItemCallback<MarsProperty>() {
         override fun areItemsTheSame(oldItem: MarsProperty, newItem: MarsProperty): Boolean {
@@ -51,11 +57,18 @@ class PhotoGridAdapter: ListAdapter<MarsProperty, PhotoGridAdapter.MarsPropertyV
             return oldItem.id == newItem.id
         }
     }
+
     // 4. add view holder
-    class MarsPropertyViewHolder(private var binding: GridViewItemBinding): RecyclerView.ViewHolder(binding.root) {
+    class MarsPropertyViewHolder(private var binding: GridViewItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(marsProperty: MarsProperty) {
             binding.property = marsProperty
             binding.executePendingBindings()
         }
+    }
+
+    /** Click listener when the image in the grid view tapped **/
+    class OnClickLister(val clickLister: (marsProperty: MarsProperty) -> Unit) {
+        fun onClick(marsProperty: MarsProperty) = clickLister(marsProperty)
     }
 }

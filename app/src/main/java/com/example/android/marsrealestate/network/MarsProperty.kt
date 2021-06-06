@@ -17,7 +17,9 @@
 
 package com.example.android.marsrealestate.network
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
 /** Example Response JSON
  * [{"price":450000,
@@ -26,6 +28,7 @@ import com.squareup.moshi.Json
 "img_src":"http://mars.jpl.nasa.gov/msl-raw-images/msss/01000/mcam/1000ML0044631300305227E03_DXXX.jpg"},
 ...]
  */
+@Parcelize
 data class MarsProperty(
     val id: String,
     // '@JSON' performs to find a match with "img_src" in JSON string
@@ -33,4 +36,7 @@ data class MarsProperty(
     @Json(name = "img_src") val imgSrcUrl: String,
     val type: String,
     val price: Double
-)
+) : Parcelable {
+    val isRental
+        get() = type == "rent"
+}

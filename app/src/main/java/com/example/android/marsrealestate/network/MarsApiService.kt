@@ -25,6 +25,14 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 /** When just use JSON string **/
 //import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
+
+/** Filters for the web service query **/
+enum class MarsApiFilter(val value: String) {
+    SHOW_RENT("rent"),
+    SHOW_BUY("buy"),
+    SHOW_ALL("all")
+}
 
 // 1. Base URL
 private const val BASE_URL = "https://android-kotlin-fun-mars-server.appspot.com/"
@@ -43,13 +51,17 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 // 3. Define interfaces with annotations
+//interface MarsApiService {
+//    // Generated Path: BASE_URL + EndPoint: "realestate"
+//    // 'getProperties()' gets the JSON response string from the web service
+//    // Annotation tells Retrofit what this method should do
+//    @GET("realestate")            // import retrofit2.http.GET
+////    fun getProperties(): Call<String>   // import retrofit2.Call: start the request   /** For JSON string **/
+//    suspend fun getProperties(): List<MarsProperty> /** For Kotlin objects **/
+//}
 interface MarsApiService {
-    // Generated Path: BASE_URL + EndPoint: "realestate"
-    // 'getProperties()' gets the JSON response string from the web service
-    // Annotation tells Retrofit what this method should do
-    @GET("realestate")            // import retrofit2.http.GET
-//    fun getProperties(): Call<String>   // import retrofit2.Call: start the request   /** For JSON string **/
-    suspend fun getProperties(): List<MarsProperty> /** For Kotlin objects **/
+    @GET("realestate")
+    suspend fun getProperties(@Query("filter") type: String): List<MarsProperty>
 }
 
 // 4. Initialize the Retrofit service: Must be public to share within this entire app
